@@ -7,6 +7,7 @@ require('dotenv').config();
 router.get('/books', async (req, res) => {
   try {
     const query = req.query.q || 'javascript';
+    console.log('OpenLibrary API Query:', query, "URL:", `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
     const response = await axios.get(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`, {
       timeout: 5000 // 5 second timeout
     });
