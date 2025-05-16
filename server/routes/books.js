@@ -2,17 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Book = require('../models/Book');
 
-// Get all books
-router.get('/', async (req, res) => {
-  try {
-    const books = await Book.find();
-    res.json(books);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }const express = require('express');
-const router = express.Router();
-const Book = require('../models/Book');
-
 /**
  * @route   GET /api/books
  * @desc    Get all books
@@ -133,28 +122,6 @@ router.put('/:id', async (req, res) => {
     }
     
     res.status(500).json({ message: 'Server error', error: err.message });
-  }
-});
-
-module.exports = router;
-});
-
-// Add a new book
-router.post('/', async (req, res) => {
-    if (!req.body.title || !req.body.author || !req.body.year) {
-    return res.status(400).json({ message: 'Missing required fields' });
-  }
-  const book = new Book({
-    title: req.body.title,
-    author: req.body.author,
-    year: req.body.year
-  });
-
-  try {
-    const newBook = await book.save();
-    res.status(201).json(newBook);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
   }
 });
 

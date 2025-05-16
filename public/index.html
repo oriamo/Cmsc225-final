@@ -6,8 +6,9 @@
   <title>Book Collection App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <div class="container">
@@ -50,9 +51,15 @@
           <input type="text" id="searchQuery" placeholder="Search for books...">
           <button id="searchBtn" class="btn btn-secondary">Search</button>
         </div>
-        <div class="weather-info">
-          <p>Local Weather: <span id="weatherData">Loading...</span></p>
-          <p class="weather-message">Perfect reading weather!</p>
+        <div class="weather-card">
+          <div class="weather-icon">
+            <i class="fas fa-cloud-sun"></i>
+          </div>
+          <div class="weather-content">
+            <h3>Today's Reading Weather</h3>
+            <p class="weather-data"><span id="weatherData">Loading...</span></p>
+            <p class="weather-message">Perfect reading weather!</p>
+          </div>
         </div>
         <div id="apiResults" class="books-grid">
           <!-- API results will be displayed here -->

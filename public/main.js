@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json();
       })
       .then(data => {
-        weatherData.textContent = `${data.temperature}°F, ${data.description}`;
+        weatherData.innerHTML = `<span class="temp">${data.temperature}°F</span> <span class="desc">${data.description}</span> in <span class="location">${data.location}</span>`;
         updateWeatherMessage(data.temperature, data.description);
       })
       .catch(error => {
@@ -134,49 +134,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateWeatherMessage(temp, description) {
     const weatherMessage = document.querySelector('.weather-message');
+    const weatherIcon = document.querySelector('.weather-icon i');
     
+    // Update weather icon based on description
     if (description.toLowerCase().includes('rain')) {
+      weatherIcon.className = 'fas fa-cloud-rain';
       weatherMessage.textContent = 'Rainy day? Perfect for staying in with a good book!';
+    } else if (description.toLowerCase().includes('cloud')) {
+      weatherIcon.className = 'fas fa-cloud';
+      weatherMessage.textContent = 'Cloudy day with perfect reading light!';
+    } else if (description.toLowerCase().includes('clear') || description.toLowerCase().includes('sun')) {
+      weatherIcon.className = 'fas fa-sun';
+      weatherMessage.textContent = 'Clear skies! Perfect for reading outdoors.';
+    } else if (description.toLowerCase().includes('snow')) {
+      weatherIcon.className = 'fas fa-snowflake';
+      weatherMessage.textContent = 'Snowy day? Cozy up with a book by the fire!';
     } else if (temp < 10) {
+      weatherIcon.className = 'fas fa-temperature-low';
       weatherMessage.textContent = 'It\'s cold outside! Grab a blanket and a book.';
     } else if (temp > 25) {
+      weatherIcon.className = 'fas fa-temperature-high';
       weatherMessage.textContent = 'Warm day! Find a shady spot outdoors for reading.';
     } else {
+      weatherIcon.className = 'fas fa-cloud-sun';
       weatherMessage.textContent = 'Perfect reading weather today!';
     }
   }
 
   function displayBooks(books) {
     booksList.innerHTML = books.map(book => `
-      <div class="book-card">
-        <h3>${escapeHtml(book.title)}</h3>
-        <p><strong>Author:</strong> ${escapeHtml(book.author)}</p>
-        <p><strong>Year:</strong> ${book.year}</p>
-        <p><small>Added on: ${new Date(book.createdAt).toLocaleDateString()}</small></p>
+      <div class="book-card collection-card">
+        <div class="book-icon"><i class="fas fa-book"></i></div>
+        <div class="book-content">
+          <h3>${escapeHtml(book.title)}</h3>
+          <p><i class="fas fa-user-edit"></i> ${escapeHtml(book.author)}</p>
+          <p><i class="fas fa-calendar-alt"></i> ${book.year}</p>
+          <p class="book-date"><small>Added on: ${new Date(book.createdAt).toLocaleDateString()}</small></p>
+        </div>
       </div>
     `).join('');
   }
 
   function displayApiResults(books) {
-    apiResults.innerHTML = books.slice(0, 10).map(book => `
-      <div class="book-card">
-        <h3>${escapeHtml(book.title)}</h3>
-        <p><strong>Author:</strong> ${book.author_name ? escapeHtml(book.author_name.join(', ')) : 'Unknown'}</p>
-        <p><strong>First Published:</strong> ${book.first_publish_year || 'Unknown'}</p>
-        <p><strong>Language:</strong> ${book.language ? book.language.slice(0, 3).join(', ') : 'Not specified'}</p>
+    apiResults.innerHTML = books.slice(0, 10).map(book => {
+      const coverImage = book.cover_i 
+        ? `<img src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg" alt="Book cover" class="book-cover">`
+        : `<div class="book-icon"><i class="fas fa-book-open"></i></div>`;
+        
+      return `
+      <div class="book-card search-card">
+        <div class="book-header">
+          ${coverImage}
+          <h3>${escapeHtml(book.title)}</h3>
+        </div>
+        <div class="book-details">
+          <p><i class="fas fa-user-edit"></i> ${book.author_name ? escapeHtml(book.author_name.join(', ')) : 'Unknown'}</p>
+          <p><i class="fas fa-calendar-alt"></i> ${book.first_publish_year || 'Unknown'}</p>
+          <p><i class="fas fa-globe"></i> ${book.language ? book.language.slice(0, 3).join(', ') : 'Not specified'}</p>
+          ${book.subject ? `<p class="book-subjects"><i class="fas fa-tag"></i> ${book.subject.slice(0, 3).join(', ')}</p>` : ''}
+        </div>
       </div>
-    `).join('');
+    `}).join('');
   }
 
-  // // Helper function to prevent XSS attacks
-  // function escapeHtml(unsafe) {
-  //   return unsafe
-  //     .replace(/&/g, "&amp;")
-  //     .replace(/</g, "&lt;")
-  //     .replace(/>/g, "&gt;")
-  //     .replace(/"/g, "&quot;")
-  //     .replace(/'/g, "&#039;");
-  // }
+  // Helper function to prevent XSS attacks
+  function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') return '';
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
   // Simple notification system
   function showNotification(message, isError = false) {
